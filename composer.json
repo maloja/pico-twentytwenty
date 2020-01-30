@@ -1,0 +1,27 @@
+{
+    "name": "maloja/pico-twentytwenty",
+    "type": "pico-plugin",
+    "description": "This Plugin adds the TwentyTwenty image comparison slider for Pico CMS",
+    "keywords": [ "pico", "picocms", "picocms-plugin", "pico-twentytwenty", "image", "image-compare" ],
+    "homepage": "https://github.com/maloja/pico-twentytwenty",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maloja",
+            "homepage": "https://github.com/maloja/pico-twentytwenty",
+            "role": "Lead Developer"
+        }
+    ],
+    "support": {
+        "docs": "http://picocms.org/docs/pico-http-params/",
+        "issues": "https://github.com/maloja/pico-twentytwenty/issues",
+        "source": "https://github.com/maloja/pico-twentytwenty"
+    },
+    "require": {
+        "php": ">=5.3.6",
+        "components/jquery": ">=3.4"
+    },
+    "autoload": {
+        "classmap": [ "PicoTwentytwenty.php" ]
+    }
+}
