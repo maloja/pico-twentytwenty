@@ -1,5 +1,7 @@
 # PicoTwentytwenty
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/maloja/pico-twentytwenty)
+
 This Plugin adds the Twentytwenty image comparison slider in [PicoCMS](http://picocms.org). For further reading see also https://github.com/zurb/twentytwenty
 
 ## Installation
