@@ -2,7 +2,10 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/maloja/pico-twentytwenty)
 
-This Plugin adds the Twentytwenty image comparison slider in [PicoCMS](http://picocms.org). For further reading see also https://github.com/zurb/twentytwenty
+This Plugin adds the Twentytwenty image comparison slider in [Pico CMS](http://picocms.org). For further reading see also https://github.com/zurb/twentytwenty
+
+## Screenshot
+
 
 ## Installation
 
@@ -17,7 +20,7 @@ or, if you installed Pico CMS with composer
 
     composer require maloja/pico-twentytwenty
 
-The installation via composer will automatically install the jQuery library into vour main vendor folder under `vendor/components/jquery`, if not allready installed.
+The installation via composer will automatically install the jQuery (see below).
 
 ### Permissions
 
@@ -30,20 +33,20 @@ By default your Pico CMS installation will not permit access to javascript files
 
 Add the following expression in your Markdown file:
 
-`(% imgcompare ( image1.jpg, image2.jpg ) %)`
-
-where:
-
-| filename  | image location|
-| :-------- | :-------      |
-| http://foo.bar/image1.jpg | external images from the web            |
-| /assets/foo/image1.jpg    | internal image                          |
-| image1.jpg                | internal image within the content folder|
-
+`(% imgcompare ( /path/to/image1.jpg, /path/to/image2.jpg ) %)`
 
 
 ## Dependencies
-This Plugin depends on the **jQuery** library. Therefore some steps are needed to get Pico CMS ready for jQuery. The easiest way is an installation via composer. This will place jquery in the `vendor` folder of Pico CMS
+
+This plugin requires **jQuery** to run correctly. If PicoTwentytwenty is installed via composer, then jquery will be installed automatically. Otherwise, jQuery can also be installed manually and will usually be stored under `/yourdomain/vendor/components/jquery`. By default, Pico CMS does not allow access to jquery.js. The Pico .htaccess file must be adapted for this.
+
+`RewriteRule ^vendor/components/jquery.*\.(js)$ - [L,NC]`
+
+Then jQuery can be integrated into the Twig templates.
+
+`<script src="vendor/components/jquery/jquery.min.js"></script>`
+
+This Plugin depends on the **jQuery** library. If you install this plugin via composer, jQuery will be automativa   Therefore some steps are needed to get Pico CMS ready for jQuery. The easiest way is an installation of jQuery via composer. This will place jQuery in `yourdomain/vendor/components/jquery` of Pico CMS
 
 1. Install jQuery `composer require components/jquery`
 

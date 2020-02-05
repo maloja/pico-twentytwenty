@@ -7,7 +7,6 @@
  * @author Maloja
  * @license http://opensource.org/licenses/MIT The MIT License
  * @link    https://github.com/maloja/pico-twentytwenty
- * @version 1
  */
 class PicoTwentytwenty extends AbstractPicoPlugin
 {
@@ -19,8 +18,8 @@ class PicoTwentytwenty extends AbstractPicoPlugin
      * Internal Variables
      */
     private $twentytwenty_md_folder;
-    private $plugin_path = '/plugins/PicoTwentytwenty';
-    private $twentytwenty_found = false;
+    private $twentytwenty_count = 0;
+    private $p_keyword = 'imgcompare';
 
     /**
      * Register path relative to content without index and extension
@@ -38,29 +37,31 @@ class PicoTwentytwenty extends AbstractPicoPlugin
      * Replace (% imagecompare (img1.jpg, img2.jpg %) tags
      */
     public function onContentParsed(&$content) {
-        $counter = 0;
-        $content = preg_replace_callback( '/\\<p\\>\s*\(\%\s*imgcompare\s*\(\s*(.*?)\s*,\s*(.*?)\s*\).s*\%\)\s*\\<\\/p\\>/', function ($match) use (&$counter) {
-            $counter++;
-            $this->twentytwenty_found = true;
-            $url1 = $this->prepareImagePath($match[1]);
-            $url2 = $this->prepareImagePath($match[2]);
-            $out  = "\n" . '<!-- PicoTwentytwenty -->' . "\n";
-            $out .= '    <div class="pico-compare-wrapper">' . "\n";
-            $out .= '        <div id="imgcompare' . $counter . '" class="twentytwenty-container">' . "\n";
-            $out .= '            <img src="' . $url1 . '" />' . "\n";
-            $out .= '            <img src="' . $url2 . '" />' . "\n";
-            $out .= '        </div>' . "\n";
-            $out .= '        <div class="pico-compare-zoom-icon">&nbsp;</div>' . "\n";
-            $out .= '    </div>' . "\n";
-            $out .= '<!-- End PicoTwentytwenty -->' . "\n";
+        $content = preg_replace_callback( '/<p>\s*\(%\s+' . $this->p_keyword  .'\s*\(\s*(.*?)\s*\)\s+%\)\s*<\/p>/', function($match) {
+            $out = '';
+            if ($match[1]) {
+                $this->twentytwenty_count++;
+                list ($img1, $img2) = explode(',', str_replace('"', '', $match[1]));
+                $img1 = trim($img1);
+                $img2 = trim($img2);
+                $out  = "\n" . '<!-- PicoTwentytwenty -->' . "\n";
+                $out .= '    <div class="pico-compare-wrapper">' . "\n";
+                $out .= '        <div id="imgcompare' . $counter . '" class="twentytwenty-container">' . "\n";
+                $out .= '            <img src="' . $img1 . '" />' . "\n";
+                $out .= '            <img src="' . $img2 . '" />' . "\n";
+                $out .= '        </div>' . "\n";
+                $out .= '        <div class="pico-compare-zoom-icon">&nbsp;</div>' . "\n";
+                $out .= '    </div>' . "\n";
+                $out .= '<!-- End PicoTwentytwenty -->' . "\n";
+            }
             return $out;
         }, $content);
 
         //add plugin initializing
-        if ($this->twentytwenty_found) {
-            $content .= '    <script src="' . $this->plugin_path . '/vendor/twentytwenty/js/jquery.event.move.js"></script>' . "\n";
-            $content .= '    <script src="' . $this->plugin_path . '/vendor/twentytwenty/js/jquery.twentytwenty.js"></script>' . "\n";
-            $content .= file_get_contents($_SERVER['DOCUMENT_ROOT'] . $this->plugin_path . '/assets/ptt-scripts.inc');
+        if ($this->twentytwenty_count > 0) {
+            $content .= '<script src="' . $this->getConfig('plugins_url') . 'PicoTwentytwenty/vendor/twentytwenty/js/jquery.event.move.js"></script>' . "\n";
+            $content .= '<script src="' . $this->getConfig('plugins_url') . 'PicoTwentytwenty/vendor/twentytwenty/js/jquery.twentytwenty.js"></script>' . "\n";
+            $content .= file_get_contents($this->getConfig('plugins_url') . 'PicoTwentytwenty/assets/ptt-scripts.inc');
         }
     }
 
@@ -69,24 +70,13 @@ class PicoTwentytwenty extends AbstractPicoPlugin
      */
     public function onPageRendered(&$output ) {
         // add required javascripts in head tag
-        if ($this->twentytwenty_found) {
+        if ($this->twentytwenty_count > 0) {
             $jsh  = '    <!-- PicoTwentytwenty Elements -->' . "\n";
-            $jsh .= '     <link href="' . $this->plugin_path . '/vendor/twentytwenty/css/twentytwenty.css" rel="stylesheet">' . "\n";
-            $jsh .= '     <link href="' . $this->plugin_path . '/assets/picotwentytwenty.css" rel="stylesheet">' . "\n";
+            $jsh .= '     <link href="' . $this->getConfig('plugins_url') . 'PicoTwentytwenty/vendor/twentytwenty/css/twentytwenty.css" rel="stylesheet">' . "\n";
+            $jsh .= '     <link href="' . $this->getConfig('plugins_url') . 'PicoTwentytwenty/assets/picotwentytwenty.css" rel="stylesheet">' . "\n";
             $jsh .= '</head>' . "\n" . '<body>' . "\n";
             $output = preg_replace('/\\<\\/head\\>\s*\n\s*\\<body\\>/', $jsh, $output, 1);
         }
-    }
-
-   /**
-    * INTERNAL FUNCTIONS
-    *
-    */
-    private function prepareImagePath(&$img) {
-        if (preg_match('/^http(s)?\:\\/\\//', $img)) return $img;
-        if (preg_match('/^\\//', $img)) return $this->getConfig('base_url') . $img;
-        //ok, so nothing above matches
-        return $this->getConfig('base_url') . $this->twentytwenty_md_folder . $img;
     }
 }
 
