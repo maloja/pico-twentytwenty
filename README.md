@@ -4,7 +4,7 @@
 
 This Plugin adds the Twentytwenty image comparison slider in [Pico CMS](http://picocms.org). For further reading see also https://github.com/zurb/twentytwenty
 
-## Screenshot
+## Screenshots
 
 
 ## Installation
